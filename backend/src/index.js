@@ -17,12 +17,12 @@ app.post('/account/create', function (req, res) {
     if (!req.body.hasOwnProperty('id'))
         return res.status(400).json({"error": true, "message": "Required parameter missing"});
 
-    if (accounts.find(a => a.id === req.body.id.replace("-",""))) 
+    if (accounts.find(a => a.id === req.body.id.toString().replace("-",""))) 
         return res.status(409).json({"error": true, "message": "Account already exists." });
     else {
         accounts.push(
             {
-                "id": req.body.id.replace("-",""),
+                "id": req.body.id.toString().replace("-",""),
                 "balance" : 0
             });
     
@@ -37,7 +37,7 @@ app.get('/account/balance/', (req, res) => {
 app.get('/account/balance/:id', (req, res) => {
     // if (!req.params.hasOwnProperty('id'))
     //     res.status(400).json({"error" : true, "message" : "Required parameter missing."});
-    const acc = accounts.find( a => a.id === req.params.id.replace("-","") );
+    const acc = accounts.find( a => a.id === req.params.id.toString().replace("-","") );
     
     if (!acc)
         return res.status(404).json({"error" : true, "message" : "Account not found."});
@@ -52,7 +52,7 @@ app.put('/account/credit/', (req, res) => {
     const aux = parseFloat(req.body.value);
     
     if (aux && aux > 0) {
-        const acc = accounts.find( a => a.id === req.body.id.replace("-","") );
+        const acc = accounts.find( a => a.id === req.body.id.toString().replace("-","") );
         if (!acc) 
             return res.status(404).json({"error" : true, "message" : "Account not found."});
         else {
@@ -70,7 +70,7 @@ app.put('/account/debit/', (req, res) => {
     const aux = parseFloat(req.body.value);
 
     if (aux && aux > 0) {
-        const acc = accounts.find( a => a.id === req.body.id.replace("-","") );
+        const acc = accounts.find( a => a.id === req.body.id.toString().replace("-","") );
         if (!acc) 
             return res.status(404).json({"error" : true, "message" : "Account not found."});
         else {
@@ -85,14 +85,14 @@ app.put('/account/transfer/', (req, res) => {
     if (!req.body.hasOwnProperty('originId') || !req.body.hasOwnProperty('destinationId') || !req.body.hasOwnProperty('value'))
         return res.status(400).json({"error": true, "message": "Required parameter missing."});
 
-    if (req.body.originId.replace("-","") === req.body.destinationId.replace("-",""))
+    if (req.body.originId.toString().replace("-","") === req.body.destinationId.toString().replace("-",""))
         return res.status(400).json({"error": true, "message": "Parameters for 'originId' and 'destinationId' must be different."});
     
     const aux = parseFloat(req.body.value);
 
     if (aux && aux > 0) {
-        const accOrigin = accounts.find( a => a.id === req.body.originId.replace("-","") );
-        const accDestination = accounts.find( a => a.id === req.body.destinationId.replace("-",""));
+        const accOrigin = accounts.find( a => a.id === req.body.originId.toString().replace("-","") );
+        const accDestination = accounts.find( a => a.id === req.body.destinationId.toString().replace("-",""));
         if (!accOrigin) 
             return res.status(404).json({"error" : true, "message" : `Account with id : ${req.body.originId} not found.`});
         else if (!accDestination)
