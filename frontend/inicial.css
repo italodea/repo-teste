@@ -1,0 +1,38 @@
+/* Estilos para o menu */
+
+ul.menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #f1f1f1;
+  }
+
+  ul.menu li {
+    display: inline-block;
+  }
+
+  ul.menu li a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #333;
+  }
+
+  ul.menu li a:hover {
+    background-color: #ddd;
+  }
+
+  /* Estilos adicionais */
+  body {
+    font-family: Arial, sans-serif;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px;
+  }

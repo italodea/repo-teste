@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema Bancário</title>
+  <link rel="stylesheet" type="text/css" href="./inicial.css">
+  <link rel="stylesheet" type="text/css" href="./popup.css">
+</head>
+<body>
+  <h1>Sistema Bancário</h1>
+
+  <div class="container">
+    <ul class="menu">
+      <li><a href="#" onclick="openPopup('pop1')">Cadastrar Conta</a></li>
+      <li><a href="#">Consulta Saldo</a></li>
+      <li><a href="#">Crédito</a></li>
+      <li><a href="#">Débito</a></li>
+      <li><a href="#">Transferência</a></li>
+    </ul>
+    <div id="pop1" class="popup">
+      <div class="popup-content">
+        <h2>Cadastrar Conta</h2>
+        <p>Insira um número para sua conta</p>
+        <span class="close" onclick="closePopup('pop1')">Fechar</span>
+      </div>
+      <script>
+        function openPopup(id) {
+        var popup = document.getElementById(id);
+        popup.style.display = "block";
+        }
+
+        function closePopup(id) {
+        var popup = document.getElementById(id);
+        popup.style.display = "none";
+        }
+    </script>
+</body>
+</html>
