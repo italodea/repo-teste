@@ -50,13 +50,31 @@ app.put('/account/credit/', (req, res) => {
         res.status(400).json({"error": true, "message": "Required parameter missing."});
     
     const aux = parseFloat(req.body.value);
-    console.log(aux);
+    
     if (aux && aux > 0) {
         const acc = accounts.find( a => a.id === req.body.id.replace("-","") );
         if (!acc) 
             res.status(404).json({"error" : true, "message" : "Account not found."});
         else {
             acc.balance += parseInt(req.body.value);
+            res.json({"error" : false, "data" : acc});
+        }
+    } else
+        res.status(400).json({"error": true, "message": "Required parameter invalid."});
+})
+
+app.put('/account/debit/', (req, res) => {
+    if (!req.body.hasOwnProperty('id') || !req.body.hasOwnProperty('value'))
+        res.status(400).json({"error": true, "message": "Required parameter missing."});
+    
+    const aux = parseFloat(req.body.value);
+
+    if (aux && aux > 0) {
+        const acc = accounts.find( a => a.id === req.body.id.replace("-","") );
+        if (!acc) 
+            res.status(404).json({"error" : true, "message" : "Account not found."});
+        else {
+            acc.balance -= parseInt(req.body.value);
             res.json({"error" : false, "data" : acc});
         }
     } else
