@@ -13,9 +13,27 @@ let accounts = [
     }
 ]
 
+app.post('/account/create', function (req, res) {
+    if (!req.body.hasOwnProperty('id')){
+        res.status(400).json({"error": true, "message": "The id key was not supplied"});
+    }
+    if (accounts.find(a => a.id === req.body.id.replace("-",""))) {
+        res.status(409).json({"error": true, "message": "The account already exists" });
+    }else{
+        accounts.push({
+            "id": req.body.id.replace("-",""),
+            "balance" : 0
+        });
+    
+        res.json({"error": false, "data" : accounts});
+    }
+})
+
+
 app.get('/account/balance/', (req, res) => {
     res.status(400).json({"error" : true, "message" : "Required parameter missing."});
-})
+});
+
 
 app.get('/account/balance/:id', (req, res) => {
     // if (!req.params.hasOwnProperty('id'))
