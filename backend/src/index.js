@@ -6,7 +6,12 @@ var db = require("./database/models.js");
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
+}));
 
 
 const port = 3000;
@@ -41,7 +46,7 @@ app.post('/account/create', async function (req, res) {
                 return res.status(400).json({ "error": true, "message": "Account already exists." });
             }
         } catch (error) {
-            return res.status(503).json({ "error": true, "message": "Cannot query database"});
+            return res.status(503).json({ "error": true, "message": "Cannot query database" });
         }
     }
 })
@@ -114,7 +119,7 @@ app.put('/account/credit/', async (req, res) => {
         };
         return res.json({ "error": false, "data": acc });
     } catch (error) {
-        return res.status(503).json({ "error": true, "message": "Cannot query database"});
+        return res.status(503).json({ "error": true, "message": "Cannot query database" });
     }
 })
 
@@ -155,7 +160,7 @@ app.put('/account/debit/', async (req, res) => {
         };
         return res.json({ "error": false, "data": acc });
     } catch (error) {
-        return res.status(503).json({ "error": true, "message": "Cannot query database"});
+        return res.status(503).json({ "error": true, "message": "Cannot query database" });
     }
 })
 
@@ -232,7 +237,7 @@ app.put('/account/transfer/', async (req, res) => {
 
         return res.json({ "error": false, "data": acc });
     } catch (error) {
-        return res.status(503).json({ "error": true, "message": "Cannot query database"});
+        return res.status(503).json({ "error": true, "message": "Cannot query database" });
     }
 })
 
