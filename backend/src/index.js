@@ -1,12 +1,12 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const cors = require('cors');
 var db = require("./database/models.js");
 
 const app = express();
 app.use(bodyParser.json());
-
+app.use(cors());
 
 
 const port = 3000;
