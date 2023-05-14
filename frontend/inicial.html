@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>Sistema Bancário</title>
   <link rel="stylesheet" type="text/css" href="./inicial.css">
   <link rel="stylesheet" type="text/css" href="./popup.css">
 </head>
+
 <body>
   <h1>Sistema Bancário</h1>
 
@@ -22,63 +24,195 @@
       <div class="popup-content">
         <h2>Cadastrar Conta</h2>
         <p>Insira um número para sua conta</p>
-        <input type="text" id="meuInput" placeholder="Digite o número da conta">
-        <button onclick="mostrarMensagem()">Cadastrar</button>
+        <input type="text" id="criarnumeroconta" placeholder="Digite o número da conta">
+        <button onclick="criarConta()">Cadastrar</button>
         <span class="close" onclick="closePopup('pop1')">Fechar</span>
+        <div id="respostaCriarConta">
+
         </div>
+      </div>
     </div>
-      <!-- Consultar conta -->
+    <!-- Consultar conta -->
     <div id="pop2" class="popup">
-        <div class="popup-content">
-          <h2>Consultar Conta</h2>
-          <p>Insira o número da conta</p>
-          <input type="text" id="meuInput" placeholder="Digite o número da conta">
-          <button onclick="mostrarMensagem()">Consultar</button>
-          <span class="close" onclick="closePopup('pop2')">Fechar</span>
+      <div class="popup-content">
+        <h2>Consultar Conta</h2>
+        <p>Insira o número da conta</p>
+        <input type="text" id="consultarConta" placeholder="Digite o número da conta">
+        <button onclick="consultarConta()">Consultar</button>
+        <span class="close" onclick="closePopup('pop2')">Fechar</span>
+        <div id="consultarContaResposta">
+
         </div>
+      </div>
     </div>
     <!-- Creditar na conta -->
     <div id="pop3" class="popup">
       <div class="popup-content">
         <h2>Creditar Valor na Conta</h2>
         <p>Insira o número da conta e o valor a ser creditado</p>
-        <input type="text" id="meuInput" placeholder="Digite o número da conta:">
-        <input type="text" id="meuInput" placeholder="Digite o valor R$:">
-        <button onclick="mostrarMensagem()">Creditar</button>
+        <input type="text" id="creditoConta" placeholder="Digite o número da conta:">
+        <input type="text" id="creditoValor" placeholder="Digite o valor R$:">
+        <button onclick="creditarConta()">Creditar</button>
         <span class="close" onclick="closePopup('pop3')">Fechar</span>
+        <div id="creditoContaResposta">
+
+        </div>
       </div>
-  </div>
-  <!-- Debitar -->
-  <div id="pop4" class="popup">
-    <div class="popup-content">
-      <h2>Debitar Valor na Conta</h2>
-      <p>Insira o número da conta e o valor a ser debitado</p>
-      <input type="text" id="meuInput" placeholder="Digite o número da conta:">
-      <input type="text" id="meuInput" placeholder="Digite o valor R$:">
-      <button onclick="mostrarMensagem()">Debitar</button>
-      <span class="close" onclick="closePopup('pop4')">Fechar</span>
     </div>
-  </div>
-  <div id="pop5" class="popup">
-    <div class="popup-content">
-      <h2>Tranferir Valor</h2>
-      <input type="text" id="meuInput" placeholder="Número da conta de origem:">
-      <input type="text" id="meuInput" placeholder="Número da conta de destino:">
-      <input type="text" id="meuInput" placeholder="Valor a ser tranferido R$:">
-      <button onclick="mostrarMensagem()">Transferir</button>
-      <span class="close" onclick="closePopup('pop5')">Fechar</span>
+    <!-- Debitar -->
+    <div id="pop4" class="popup">
+      <div class="popup-content">
+        <h2>Debitar Valor na Conta</h2>
+        <p>Insira o número da conta e o valor a ser debitado</p>
+        <input type="text" id="debitarConta" placeholder="Digite o número da conta:">
+        <input type="text" id="debitarValor" placeholder="Digite o valor R$:">
+        <button onclick="debitarConta()">Debitar</button>
+        <span class="close" onclick="closePopup('pop4')">Fechar</span>
+        <div id="debitoContaResposta">
+
+        </div>
+      </div>
     </div>
-  </div>
-      <script>
-        function openPopup(id) {
+    <div id="pop5" class="popup">
+      <div class="popup-content">
+        <h2>Tranferir Valor</h2>
+        <input type="text" id="contaOrigem" placeholder="Número da conta de origem:">
+        <input type="text" id="contaDestino" placeholder="Número da conta de destino:">
+        <input type="text" id="transferirValor" placeholder="Valor a ser tranferido R$:">
+        <button onclick="transferirValor()">Transferir</button>
+        <span class="close" onclick="closePopup('pop5')">Fechar</span>
+        <div id="transferirValorResposta">
+
+        </div>
+      </div>
+    </div>
+    <script>
+      function criarConta() {
+        var id = document.getElementById('criarnumeroconta').text;
+        if (id != "") {
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+
+          var raw = JSON.stringify({
+            "id": id
+          });
+
+          var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+
+          fetch("localhost:3000/account/create", requestOptions)
+            .then(response => response.text())
+            .then(result => document.getElementById('respostaCriarConta').innerHTML = result)
+            .catch(error => console.log('error', error));
+        }
+      } document.getElementById('respostaCriarConta').innerHTML = result
+      function consultarConta() {
+        var id = document.getElementById('consultarConta')
+        if (id != "") {
+          var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+          };
+
+          fetch("localhost:3000/account/balance/" + id, requestOptions)
+            .then(response => response.text())
+            .then(result => document.getElementById('respostaConsultarConta').innerHTML = result)
+            .catch(error => console.log('error', error));
+        }
+      }
+      function creditarConta() {
+        var id = document.getElementById("creditoConta").text;
+        var value = document.getElementById("creditoValor").text;
+        if (id != "" && value != "") {
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+
+          var raw = JSON.stringify({
+            "id": id,
+            "value": value
+          });
+
+          var requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+
+          fetch("localhost:3000/account/credit/", requestOptions)
+            .then(response => response.text())
+            .then(result => document.getElementById('creditoContaResposta').innerHTML = result)
+            .catch(error => console.log('error', error));
+
+
+        }
+      }
+      function debitarConta() {
+        var id = document.getElementById("debitarConta").text;
+        var value = document.getElementById("debitarValor").text;
+        if (id != "" && value != "") {
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+
+          var raw = JSON.stringify({
+            "id": id,
+            "value": value
+          });
+
+          var requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+
+          fetch("localhost:3000/account/debit/", requestOptions)
+            .then(response => response.text())
+            .then(result => document.getElementById('debitoContaResposta').innerHTML = result)
+            .catch(error => console.log('error', error));
+        }
+      }
+      function transferirValor() {
+        var contaOrigem = document.getElementById("contaOrigem");
+        var contaDestino = document.getElementById("contaDestino");
+        var value = document.getElementById("transferirValor");
+        if (contaOrigem != "" && contaDestino != "" && value != "") {
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+
+          var raw = JSON.stringify({
+            "originId": contaOrigem,
+            "destinationId": contaDestino,
+            "value": value
+          });
+
+          var requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+
+          fetch("localhost:3000/account/transfer/", requestOptions)
+            .then(response => response.text())
+            .then(result => document.getElementById('transferirValorResposta').innerHTML = result)
+            .catch(error => console.log('error', error));
+        }
+      }
+      function openPopup(id) {
         var popup = document.getElementById(id);
         popup.style.display = "block";
-        }
+      }
 
-        function closePopup(id) {
+      function closePopup(id) {
         var popup = document.getElementById(id);
         popup.style.display = "none";
-        }
+      }
     </script>
 </body>
+
 </html>
