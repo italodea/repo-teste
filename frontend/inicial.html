@@ -12,17 +12,63 @@
   <div class="container">
     <ul class="menu">
       <li><a href="#" onclick="openPopup('pop1')">Cadastrar Conta</a></li>
-      <li><a href="#">Consulta Saldo</a></li>
-      <li><a href="#">Crédito</a></li>
-      <li><a href="#">Débito</a></li>
-      <li><a href="#">Transferência</a></li>
+      <li><a href="#" onclick="openPopup('pop2')">Consultar Saldo</a></li>
+      <li><a href="#" onclick="openPopup('pop3')">Crédito</a></li>
+      <li><a href="#" onclick="openPopup('pop4')">Débito</a></li>
+      <li><a href="#" onclick="openPopup('pop5')">Transferência</a></li>
     </ul>
+    <!-- Cadastrar conta  -->
     <div id="pop1" class="popup">
       <div class="popup-content">
         <h2>Cadastrar Conta</h2>
         <p>Insira um número para sua conta</p>
+        <input type="text" id="meuInput" placeholder="Digite o número da conta">
+        <button onclick="mostrarMensagem()">Cadastrar</button>
         <span class="close" onclick="closePopup('pop1')">Fechar</span>
+        </div>
+    </div>
+      <!-- Consultar conta -->
+    <div id="pop2" class="popup">
+        <div class="popup-content">
+          <h2>Consultar Conta</h2>
+          <p>Insira o número da conta</p>
+          <input type="text" id="meuInput" placeholder="Digite o número da conta">
+          <button onclick="mostrarMensagem()">Consultar</button>
+          <span class="close" onclick="closePopup('pop2')">Fechar</span>
+        </div>
+    </div>
+    <!-- Creditar na conta -->
+    <div id="pop3" class="popup">
+      <div class="popup-content">
+        <h2>Creditar Valor na Conta</h2>
+        <p>Insira o número da conta e o valor a ser creditado</p>
+        <input type="text" id="meuInput" placeholder="Digite o número da conta:">
+        <input type="text" id="meuInput" placeholder="Digite o valor R$:">
+        <button onclick="mostrarMensagem()">Creditar</button>
+        <span class="close" onclick="closePopup('pop3')">Fechar</span>
       </div>
+  </div>
+  <!-- Debitar -->
+  <div id="pop4" class="popup">
+    <div class="popup-content">
+      <h2>Debitar Valor na Conta</h2>
+      <p>Insira o número da conta e o valor a ser debitado</p>
+      <input type="text" id="meuInput" placeholder="Digite o número da conta:">
+      <input type="text" id="meuInput" placeholder="Digite o valor R$:">
+      <button onclick="mostrarMensagem()">Debitar</button>
+      <span class="close" onclick="closePopup('pop4')">Fechar</span>
+    </div>
+  </div>
+  <div id="pop5" class="popup">
+    <div class="popup-content">
+      <h2>Tranferir Valor</h2>
+      <input type="text" id="meuInput" placeholder="Número da conta de origem:">
+      <input type="text" id="meuInput" placeholder="Número da conta de destino:">
+      <input type="text" id="meuInput" placeholder="Valor a ser tranferido R$:">
+      <button onclick="mostrarMensagem()">Transferir</button>
+      <span class="close" onclick="closePopup('pop5')">Fechar</span>
+    </div>
+  </div>
       <script>
         function openPopup(id) {
         var popup = document.getElementById(id);
