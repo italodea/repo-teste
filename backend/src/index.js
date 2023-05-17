@@ -155,15 +155,15 @@ app.put('/account/debit/', async (req, res) => {
             return res.status(404).json({ "error": true, "message": "Account not found." });
         }
 
-        if(row.balance < 0){
+        if (row.balance < 0) {
             var row = await db.Accounts.update({
                 balance: db.sequelize.literal('balance + ' + ammount)
             },
-            {
-                where: {
-                    account: id
-                },
-            });
+                {
+                    where: {
+                        account: id
+                    },
+                });
             return res.status(503).json({ "error": true, "message": "Insufficient balance" });
         }
         const acc = {
@@ -202,8 +202,8 @@ app.put('/account/transfer/', async (req, res) => {
             return res.status(404).json({ "error": true, "message": "Origin Account not found." });
         }
 
-        if(originAccount.balance < 0){
-            return res.status(503).json({"error": true , "message" : "Insufficient balance"});
+        if (originAccount.balance < 0) {
+            return res.status(503).json({ "error": true, "message": "Insufficient balance" });
         }
 
         var destinationAccount = await db.Accounts.findOne({
