@@ -16,8 +16,9 @@ app.use(cors({
 const port = 3000;
 
 app.post('/account/create', async function (req, res) {
-    if (!req.body.hasOwnProperty('id'))
+    if (!req.body.hasOwnProperty('id') || !req.body.hasOwnProperty('type'))
         return res.status(400).json({ "error": true, "message": "Required parameter missing" });
+
     else {
         try {
             req.body.id += "";
@@ -31,14 +32,34 @@ app.post('/account/create', async function (req, res) {
             });
 
             if (row == null) {
-                await db.Accounts.create({
-                    account: id,
-                    balance: 0
-                });
+                if (req.body.type == "Simples") {
+                    await db.Accounts.create({
+                        account: id,
+                        balance: 0,
+                    });
 
-                var acc = {
-                    "id": id,
-                    "balance": 0
+                    var acc = {
+                        "id": id,
+                        "balance": 0
+                    }
+                } else if (req.body.type == "Bonus") {
+                    await db.Accounts.create({
+                        account: id,
+                        balance: 0,
+                        type: "Bonus",
+                        bonus_points: 10
+                    });
+
+                    var acc = {
+                        "id": id,
+                        "balance": 0,
+                        "type": "Bonus",
+                        "bonus_points": 10
+                    }
+                } else if (req.body.type == "Poupanca") {
+
+                } else {
+                    return res.status(400).json({ "error": true, "message": "Wrong type for account." });
                 }
                 return res.json({ "error": false, "data": acc });
             } else {
@@ -112,10 +133,29 @@ app.put('/account/credit/', async (req, res) => {
         if (row == null) {
             return res.status(404).json({ "error": true, "message": "Account not found." });
         }
-        const acc = {
-            "id": row.account,
-            "balance": row.balance
-        };
+        if (row.type == "Bonus") {
+            var points = Math.floor(ammount / 100);
+            var result = await db.Accounts.update({
+                bonus_points: db.sequelize.literal('bonus_points +' + points)
+            },
+            {
+                where: {
+                    account: id
+                }
+            });
+
+            const acc = {
+                "id": row.account,
+                "balance": row.balance,
+                "bonus_points": row.bonus_points + points
+            };
+        }else{
+            const acc = {
+                "id": row.account,
+                "balance": row.balance
+            };
+        }
+        
         return res.json({ "error": false, "data": acc });
     } catch (error) {
         return res.status(503).json({ "error": true, "message": "Cannot query database" });
@@ -215,6 +255,11 @@ app.put('/account/transfer/', async (req, res) => {
             return res.status(404).json({ "error": true, "message": "Destination Account not found." });
         }
 
+        var bonus_points = 0;
+        if(destinationAccount.type == "Bonus"){
+            bonus_points += destinationAccount.bonus_points + Math.floor(ammount / 100);
+        }
+
         var row = await db.Accounts.update({
             balance: db.sequelize.literal('balance - ' + ammount)
         }, {
@@ -224,7 +269,8 @@ app.put('/account/transfer/', async (req, res) => {
         });
 
         row = await db.Accounts.update({
-            balance: db.sequelize.literal('balance + ' + ammount)
+            balance: db.sequelize.literal('balance + ' + ammount),
+            bonus_points: bonus_points
         }, {
             where: {
                 account: destinationId
@@ -232,18 +278,24 @@ app.put('/account/transfer/', async (req, res) => {
         });
 
 
-
-
+        
         const acc = [{
             "id": originAccount.account,
             "balance": originAccount.balance - ammount
         }];
 
-        acc.push({
-            "id": destinationAccount.account,
-            "balance": destinationAccount.balance + ammount
-        });
-
+        if(destinationAccount.type == "Bonus"){
+            acc.push({
+                "id": destinationAccount.account,
+                "balance": destinationAccount.balance + ammount,
+                "bonus_points": bonus_points
+            });
+        }else{
+            acc.push({
+                "id": destinationAccount.account,
+                "balance": destinationAccount.balance + ammount
+            });
+        }
         row = await db.Accounts.findOne({
             where: {
                 account: destinationId
