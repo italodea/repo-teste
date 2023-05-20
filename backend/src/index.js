@@ -1,4 +1,3 @@
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -154,6 +153,18 @@ app.put('/account/debit/', async (req, res) => {
         if (row == null) {
             return res.status(404).json({ "error": true, "message": "Account not found." });
         }
+
+        if(row.balance < 0){
+            var row = await db.Accounts.update({
+                balance: db.sequelize.literal('balance + ' + ammount)
+            },
+            {
+                where: {
+                    account: id
+                },
+            });
+            return res.status(503).json({ "error": true, "message": "Insufficient balance" });
+        }
         const acc = {
             "id": row.account,
             "balance": row.balance
@@ -188,6 +199,10 @@ app.put('/account/transfer/', async (req, res) => {
 
         if (originAccount == null) {
             return res.status(404).json({ "error": true, "message": "Origin Account not found." });
+        }
+
+        if(originAccount.balance < ammount){
+            return res.status(503).json({"error": true , "message" : "Insufficient balance"});
         }
 
         var destinationAccount = await db.Accounts.findOne({
