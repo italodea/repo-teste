@@ -273,7 +273,7 @@ app.put('/account/transfer/', async (req, res) => {
 
         var bonus_points = 0;
         if(destinationAccount.type == "Bonus")
-            bonus_points += destinationAccount.bonus_points + Math.floor(ammount / 100);
+            bonus_points += destinationAccount.bonus_points + Math.floor(ammount / 200);
 
         await db.Accounts.update({
             balance: db.sequelize.literal('balance - ' + ammount)
