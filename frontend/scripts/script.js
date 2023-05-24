@@ -152,7 +152,7 @@ function renderJuros() {
     redirect: 'follow'
   };
 
-  fetch("localhost:3000/account/yieldInterest/", requestOptions)
+  fetch("http://localhost:3000/account/yieldInterest/", requestOptions)
     .then(response => response.text())
     .then(result => result => document.getElementById('renderResposta').innerHTML = result)
     .catch(error => console.log('error', error));
