@@ -18,12 +18,18 @@
       <li><a href="#" onclick="openPopup('pop3')">Crédito</a></li>
       <li><a href="#" onclick="openPopup('pop4')">Débito</a></li>
       <li><a href="#" onclick="openPopup('pop5')">Transferência</a></li>
+      <li><a href="#" onclick="openPopup('pop6')">Render Juros</a></li>
     </ul>
     <!-- Cadastrar conta  -->
     <div id="pop1" class="popup">
       <div class="popup-content">
         <h2>Cadastrar Conta</h2>
         <p>Insira um número para sua conta</p>
+        <select id="criarTipo">
+          <option value="Simples">Conta Simples</option>
+          <option value="Bonus">Conta Bônus</option>
+          <option value="Poupanca">Conta Poupança</option>
+        </select>
         <input type="text" id="criarConta" placeholder="Digite o número da conta">
         <div class="btn" onclick="criarConta()">Cadastrar</div>
         <span class="close" onclick="closePopup('pop1')">Fechar</span>
@@ -73,6 +79,7 @@
         </div>
       </div>
     </div>
+      <!-- Transfirir -->
     <div id="pop5" class="popup">
       <div class="popup-content">
         <h2>Tranferir Valor</h2>
@@ -82,6 +89,18 @@
         <div class="btn" onclick="transferirValor()">Transferir</div>
         <span class="close" onclick="closePopup('pop5')">Fechar</span>
         <div id="transferirResposta">
+
+        </div>
+      </div>
+    </div>
+    <div id="pop6" class="popup">
+      <div class="popup-content">
+        <h2>Render Juros</h2>
+        <input type="text" id="renderConta" placeholder="Numero da conta: ">
+        <input type="text" id="renderTaxa" placeholder="Taxa de juros: ">
+        <div class="btn" onclick="renderJuros()">Render Juros</div>
+        <span class="close" onclick="closePopup('pop6')">Fechar</span>
+        <div id="renderResposta">
 
         </div>
       </div>
