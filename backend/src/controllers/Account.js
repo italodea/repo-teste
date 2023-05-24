@@ -46,7 +46,7 @@ class AccountController {
 
                         await db.Accounts.create({
                             account: id,
-                            balance: 0,
+                            balance: ammount,
                             type: "Poupanca"
                         });
 
@@ -231,7 +231,7 @@ class AccountController {
             return res.status(503).json({ "error": true, "message": "Cannot query database" });
         }
     }
-    
+
 
     static async transferBalance(req, res) {
         if (!req.body.hasOwnProperty('originId') || !req.body.hasOwnProperty('destinationId') || !req.body.hasOwnProperty('value'))
