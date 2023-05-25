@@ -1,6 +1,8 @@
 /* Estilos para o menu */
-
-.btn{
+#criarContaPoupanca{
+  display: none;
+}
+.btn {
   background-color: grey;
   padding: 9px 6px;
   width: fit-content;

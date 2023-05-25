@@ -1,13 +1,15 @@
 function criarConta() {
   var criarConta = document.getElementById('criarConta').value;
   var criarTipo = document.getElementById("criarTipo").value;
+  var criarValor = document.getElementById("criaContaPoupanca").value;
   if (criarConta != "") {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     var raw = JSON.stringify({
       "id": criarConta,
-      "type": criarTipo
+      "type": criarTipo,
+      "balance": criarValor
     });
 
     var requestOptions = {
@@ -151,9 +153,20 @@ function renderJuros() {
     body: raw,
     redirect: 'follow'
   };
+  
 
-  fetch("http://localhost:3000/account/yieldInterest/", requestOptions)
+  fetch("localhost:3000/account/yieldInterest/", requestOptions)
     .then(response => response.text())
     .then(result => result => document.getElementById('renderResposta').innerHTML = result)
     .catch(error => console.log('error', error));
+}
+
+function exibirInput() {
+  var select = document.getElementById('criarTipo').value;
+  var input = document.getElementById('criarContaPoupanca');
+  if (select == 'Poupanca') {
+    input.style = 'display:block'; // Exibe o campo de input
+  } else {
+    input.style = 'display:none'; // Oculta o campo de input
+  }
 }

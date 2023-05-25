@@ -25,12 +25,13 @@
       <div class="popup-content">
         <h2>Cadastrar Conta</h2>
         <p>Insira um número para sua conta</p>
-        <select id="criarTipo">
+        <select onchange="exibirInput()" id="criarTipo">
           <option value="Simples">Conta Simples</option>
           <option value="Bonus">Conta Bônus</option>
           <option value="Poupanca">Conta Poupança</option>
         </select>
         <input type="text" id="criarConta" placeholder="Digite o número da conta">
+        <input type="text" id="criarContaPoupanca" placeholder="Digite o saldo inicial">
         <div class="btn" onclick="criarConta()">Cadastrar</div>
         <span class="close" onclick="closePopup('pop1')">Fechar</span>
         <div id="criarResposta">
@@ -79,7 +80,7 @@
         </div>
       </div>
     </div>
-      <!-- Transfirir -->
+    <!-- Transfirir -->
     <div id="pop5" class="popup">
       <div class="popup-content">
         <h2>Tranferir Valor</h2>
