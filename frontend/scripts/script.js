@@ -1,11 +1,14 @@
 function criarConta() {
     var criarConta = document.getElementById('criarConta').value;
-    if (criarConta != "") {
+    var saldoInicial = document.getElementById('saldoInicial').value;
+    
+    if (criarConta != "" && saldoInicial != "") {
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
       var raw = JSON.stringify({
-        "id": criarConta
+        "id": criarConta,
+        "balance": saldoInicial
       });
 
       var requestOptions = {
