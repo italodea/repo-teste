@@ -6,7 +6,6 @@ class AccountController {
         if (!req.body.hasOwnProperty('id') || !req.body.hasOwnProperty('type'))
             return res.status(400).json({ "error": true, "message": "Required parameter missing" });
 
-
         else {
             try {
                 req.body.id += "";
@@ -60,10 +59,8 @@ class AccountController {
                             type: "Poupanca"
                         });
 
-                    } else {
+                    } else
                         return res.status(400).json({ "error": true, "message": "Wrong type for account." });
-                    }
-
 
                     var acc = {
                         "id": id,
@@ -71,21 +68,18 @@ class AccountController {
                         "type": req.body.type,
                     };
 
-                    if (acc.type == "Bonus") {
+                    if (acc.type == "Bonus")
                         acc.bonus_points = 10;
-                    }
-
 
                     return res.json({ "error": false, "data": acc });
-                } else {
+                } else
                     return res.status(400).json({ "error": true, "message": "Account already exists." });
-                }
+
             } catch (error) {
                 return res.status(503).json({ "error": true, "message": "Cannot query database" });
             }
         }
     }
-
 
     static async getBalance(req, res) {
         if (!req.params.hasOwnProperty('id'))
@@ -104,11 +98,14 @@ class AccountController {
             if (row == null)
                 return res.status(404).json({ "error": true, "message": "Account not found." });
 
-            const acc = {
+            var acc = {
                 "id": row.account,
                 "balance": row.balance,
                 "type": row.type
             };
+
+            if (acc.type == "Bonus")
+                acc.bonus_points = row.bonus_points;
 
             return res.json({ "error": false, "data": acc });
         } catch (error) {
@@ -159,17 +156,14 @@ class AccountController {
 
             }
 
-            const acc = row.type == "Bonus" ?
-                {
-                    "id": row.account,
-                    "balance": row.balance,
-                    "type": "Bonus",
-                    "bonus_points": row.bonus_points + points
-                } : {
-                    "id": row.account,
-                    "balance": row.balance,
-                    "type": row.type
-                };
+            var acc = {
+                "id": row.account,
+                "balance": row.balance,
+                "type": row.type
+            };
+
+            if (acc.type == "Bonus")
+                acc.bonus_points = row.bonus_points + points;
 
             return res.json({ "error": false, "data": acc });
         } catch (error) {
@@ -220,21 +214,17 @@ class AccountController {
                 });
 
                 return res.status(503).json({ "error": true, "message": "Insufficient balance." });
-            } else if (row.balance < ammount) {
+            } else if (row.balance < ammount)
                 return res.status(503).json({ "error": true, "message": "Insufficient balance." });
-            }
 
-            const acc = row.type == "Bonus" ?
-                {
-                    "id": row.account,
-                    "balance": row.balance,
-                    "type": "Bonus",
-                    "bonus_points": row.bonus_points
-                } : {
-                    "id": row.account,
-                    "balance": row.balance,
-                    "type": row.type
-                };
+            var acc = {
+                "id": row.account,
+                "balance": row.balance,
+                "type": row.type
+            };
+
+            if (acc.type == "Bonus")
+                acc.bonus_points = row.bonus_points;
 
             return res.json({ "error": false, "data": acc });
         } catch (error) {
@@ -268,12 +258,10 @@ class AccountController {
             if (originAccount == null)
                 return res.status(404).json({ "error": true, "message": "Origin Account not found." });
 
-            if ((originAccount.type == "Poupanca" || originAccount.type == "Simples") && (originAccount.balance - ammount) < 1000) {
+            if ((originAccount.type == "Poupanca" || originAccount.type == "Simples") && (originAccount.balance - ammount) < 1000)
                 return res.status(503).json({ "error": true, "message": "Insufficient balance" });
-            } else if (originAccount.balance < ammount)
+            else if (originAccount.balance < ammount)
                 return res.status(503).json({ "error": true, "message": "Insufficient balance" });
-
-
 
             var destinationAccount = await db.Accounts.findOne({
                 where: {
@@ -286,7 +274,7 @@ class AccountController {
 
             var bonus_points = 0;
             if (destinationAccount.type == "Bonus")
-                bonus_points += destinationAccount.bonus_points + Math.floor(ammount / 200);
+                bonus_points += destinationAccount.bonus_points + Math.floor(ammount / 150);
 
             await db.Accounts.update({
                 balance: db.sequelize.literal('balance - ' + ammount)
@@ -372,7 +360,7 @@ class AccountController {
             const acc = {
                 "id": accPoupanca.account,
                 "balance": accPoupanca.balance * (1 + interestRate / 100),
-                "account type": accPoupanca.type
+                "type": accPoupanca.type
             };
 
             return res.json({ "error": false, "data": acc });
