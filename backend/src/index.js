@@ -16,12 +16,11 @@ app.use(cors({
 const port = 3000;
 
 app.post('/account/create', async function (req, res) {
-    if (!req.body.hasOwnProperty('id'))
+    if (!req.body.hasOwnProperty('id') || !req.body.hasOwnProperty('balance'))
         return res.status(400).json({ "error": true, "message": "Required parameter missing" });
     else {
         try {
             req.body.id += "";
-
             var id = req.body.id.replace("-", "");
 
             var row = await db.Accounts.findOne({
@@ -31,14 +30,18 @@ app.post('/account/create', async function (req, res) {
             });
 
             if (row == null) {
+                var ammount = parseFloat(req.body.balance)
+                if (!(ammount && ammount >= 0))
+                    return res.status(400).json({ "error": true, "message": "Required parameter invalid." });
+
                 await db.Accounts.create({
                     account: id,
-                    balance: 0
+                    balance: ammount
                 });
 
                 var acc = {
                     "id": id,
-                    "balance": 0
+                    "balance": ammount
                 }
                 return res.json({ "error": false, "data": acc });
             } else {
@@ -53,14 +56,11 @@ app.post('/account/create', async function (req, res) {
 
 app.get('/account/balance/:id', async (req, res) => {
 
-    // Check if the req has the parameter id
     if (!req.params.hasOwnProperty('id'))
         return res.status(400).json({ "error": true, "message": "Required parameter missing." });
 
     req.params.id += ""
     var id = req.params.id.replace('-', '')
-
-
 
     try {
         var row = await db.Accounts.findOne({
