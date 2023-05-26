@@ -19,11 +19,21 @@ class AccountController {
                 });
 
                 if (row == null) {
+                    var ammount = 0;
+
                     if (req.body.type == "Simples") {
+
+                        if (!req.body.hasOwnProperty('balance'))
+                            return res.status(400).json({ "error": true, "message": "Required parameter missing for account type 'Poupança'" });
+
+                        ammount = parseFloat(req.body.balance);
+                        if (!(ammount && ammount > 0))
+                            return res.status(400).json({ "error": true, "message": "Required parameter invalid." });
 
                         await db.Accounts.create({
                             account: id,
-                            balance: 0
+                            balance: ammount,
+                            type: "Simples"
                         });
 
                     } else if (req.body.type == "Bonus") {
@@ -40,7 +50,7 @@ class AccountController {
                         if (!req.body.hasOwnProperty('balance'))
                             return res.status(400).json({ "error": true, "message": "Required parameter missing for account type 'Poupança'" });
 
-                        var ammount = parseFloat(req.body.value);
+                        ammount = parseFloat(req.body.balance);
                         if (!(ammount && ammount > 0))
                             return res.status(400).json({ "error": true, "message": "Required parameter invalid." });
 
@@ -54,17 +64,17 @@ class AccountController {
                         return res.status(400).json({ "error": true, "message": "Wrong type for account." });
                     }
 
-                    var acc = req.body.type == "Bonus" ?
-                        {
-                            "id": id,
-                            "balance": 0,
-                            "type": "Bonus",
-                            "bonus_points": 10
-                        } : {
-                            "id": id,
-                            "balance": 0,
-                            "type": req.body.type
-                        };
+
+                    var acc = {
+                        "id": id,
+                        "balance": ammount,
+                        "type": req.body.type,
+                    };
+
+                    if (acc.type == "Bonus") {
+                        acc.bonus_points = 10;
+                    }
+
 
                     return res.json({ "error": false, "data": acc });
                 } else {
@@ -199,7 +209,7 @@ class AccountController {
             if (row == null)
                 return res.status(404).json({ "error": true, "message": "Account not found." });
 
-            if ((row.type == "Poupanca" || row.type == "Simples") && (row.balance - ammount) < 10000) {
+            if ((row.type == "Poupanca" || row.type == "Simples") && (row.balance - ammount) < 1000) {
 
                 await db.Accounts.update({
                     balance: db.sequelize.literal('balance + ' + ammount)
@@ -258,7 +268,7 @@ class AccountController {
             if (originAccount == null)
                 return res.status(404).json({ "error": true, "message": "Origin Account not found." });
 
-            if ((originAccount.type == "Poupanca" || originAccount.type == "Simples") && (originAccount.balance - ammount) < 10000) {
+            if ((originAccount.type == "Poupanca" || originAccount.type == "Simples") && (originAccount.balance - ammount) < 1000) {
                 return res.status(503).json({ "error": true, "message": "Insufficient balance" });
             } else if (originAccount.balance < ammount)
                 return res.status(503).json({ "error": true, "message": "Insufficient balance" });
