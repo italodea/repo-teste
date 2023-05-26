@@ -1,7 +1,7 @@
 function criarConta() {
   var criarConta = document.getElementById('criarConta').value;
   var criarTipo = document.getElementById("criarTipo").value;
-  var criarValor = document.getElementById("criaContaPoupanca").value;
+  var criarValor = document.getElementById("criarContaValor").value;
   if (criarConta != "") {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -73,7 +73,7 @@ function debitarConta() {
   var debitarValor = document.getElementById("debitarValor").value;
   if (debitarConta != "" && debitarValor != "") {
     var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    myHeaderscriarContaValor.append("Content-Type", "application/json");
 
     var raw = JSON.stringify({
       "id": debitarConta,

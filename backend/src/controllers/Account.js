@@ -19,11 +19,19 @@ class AccountController {
                 });
 
                 if (row == null) {
+                    var ammount = 0;
+
                     if (req.body.type == "Simples") {
+                        if (!req.body.hasOwnProperty('balance'))
+                            return res.status(400).json({ "error": true, "message": "Required parameter missing" });
+
+                        ammount = parseFloat(req.body.balance)
+                        if (!(ammount && ammount >= 0))
+                            return res.status(400).json({ "error": true, "message": "Required parameter invalid." });
 
                         await db.Accounts.create({
                             account: id,
-                            balance: 0
+                            balance: ammount
                         });
 
                     } else if (req.body.type == "Bonus") {
@@ -40,9 +48,10 @@ class AccountController {
                         if (!req.body.hasOwnProperty('balance'))
                             return res.status(400).json({ "error": true, "message": "Required parameter missing for account type 'Poupança'" });
 
-                        var ammount = parseFloat(req.body.value);
-                        if (!(ammount && ammount > 0))
+                        ammount = parseFloat(req.body.balance)
+                        if (!(ammount && ammount >= 0))
                             return res.status(400).json({ "error": true, "message": "Required parameter invalid." });
+
 
                         await db.Accounts.create({
                             account: id,
@@ -54,18 +63,18 @@ class AccountController {
                         return res.status(400).json({ "error": true, "message": "Wrong type for account." });
                     }
 
-                    var acc = req.body.type == "Bonus" ?
-                        {
-                            "id": id,
-                            "balance": 0,
-                            "type": "Bonus",
-                            "bonus_points": 10
-                        } : {
-                            "id": id,
-                            "balance": 0,
-                            "type": req.body.type
-                        };
-
+                    var acc = {
+                        "id": id,
+                        "balance": 0,
+                        "type": req.body.type,
+                    };
+                    
+                    if(req.body.type == "Simples" || req.body.type == "Poupanca"){
+                        acc.balance = ammount;
+                    }else if(req.body.type == "Bonus"){
+                        acc.bonus_points = 10;
+                    }
+                    
                     return res.json({ "error": false, "data": acc });
                 } else {
                     return res.status(400).json({ "error": true, "message": "Account already exists." });
