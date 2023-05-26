@@ -13,9 +13,17 @@ const Accounts = sequelize.define('accounts', {
     unique: true,
     type: DataTypes.INTEGER,
   },
+  type: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  bonus_points: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
   balance: DataTypes.REAL,
-},{
-    timestamps: false,
+}, {
+  timestamps: false,
 });
 
 module.exports.sequelize = sequelize;
