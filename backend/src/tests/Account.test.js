@@ -14,6 +14,7 @@ const conta_id_bonus = (
 const conta_id_poupanca = (
   Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000
 ).toString();
+
 describe("AccountController", () => {
   after(async () => {
     await db.sequelize.close();
@@ -368,6 +369,7 @@ describe("AccountController", () => {
         })
       ).to.be.true;
     });
+
     it("should return 503 if balance is insufficient for type Bonus", async () => {
       const req = { body: { id: conta_id_bonus, value: 300 } };
       const res = {
@@ -501,6 +503,38 @@ describe("AccountController", () => {
         })
       ).to.be.true;
     });
+
+    it("test bonus points for Bonus type accounts in transferences", async () => {
+      const res = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.spy(),
+      };
+
+      const id = (Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000).toString();
+      const ammount = Math.floor(Math.random() * 1000 + 1);
+
+      await db.Accounts.create({
+        account: id,
+        balance: ammount,
+        type: "Simples"}
+      );
+
+      const req = {
+        body: {
+          originId: id, 
+          destinationId: conta_id_bonus, 
+          value: Math.min(ammount, Math.floor(Math.random() * ammount + 1)),
+        }};
+
+      const destinationAccount = await db.Accounts.findOne({ where: { account: conta_id_bonus }});
+      await AccountController.transferBalance(req, res);
+      const updatedDestinationAccount = await db.Accounts.findOne({ where: { account: conta_id_bonus }});
+
+      const expectedBonusPoints = destinationAccount.bonus_points + Math.floor(req.body.value / 150);
+
+      expect(updatedDestinationAccount.bonus_points).to.equal(expectedBonusPoints);
+    });
+
   });
 
   describe("yieldInterest", () => {
@@ -536,7 +570,6 @@ describe("AccountController", () => {
       ).to.be.true;
     });
 
-
     it("should return 400 if account type is not Poupanca", async () => {
       const req = { body: { id: conta_id, interestRate: 10 } };
       const res = {
@@ -553,5 +586,25 @@ describe("AccountController", () => {
         })
       ).to.be.true;
     });
+
+    it("should yield interest correctly for all accounts of type Poupança", async () => {
+      const res = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.spy(),
+      };
+
+      const poupancaAccounts = await db.Accounts.findAll({ where: { type: "Poupança" } });
+
+      await Promise.all(poupancaAccounts.map(async (account) => {
+        var req = { body: { id: account.account, interestRate: Math.random() * (100 + 1) }};
+        const expectedBalance = account.balance * (1 + req.body.interestRate / 100);
+
+        await AccountController.yieldInterest(req, res);
+        const updatedAccPoupanca = await db.Accounts.findOne({ where: { account: account.account } });
+
+        expect(updatedAccPoupanca.balance).to.equal(expectedBalance);
+      }));
+    });
+    
   });
 });
