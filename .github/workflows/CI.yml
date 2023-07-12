@@ -18,14 +18,14 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 20.4
+        
 
       - name: Resolve dependencies
+        working-directory: ./backend
         run: npm ci
 
-      - name: Build system
-        run: npm run build
-
       - name: Execute unit tests
+        working-directory: ./backend
         run: npm test
 
       - name: Tag the build
