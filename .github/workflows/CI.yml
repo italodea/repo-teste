@@ -1,0 +1,35 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: develop
+  pull_request:
+    branches: develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20.4
+        
+
+      - name: Resolve dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Execute unit tests
+        working-directory: ./backend
+        run: npm test
+
+      - name: Tag the build
+        run: |
+          TAG_NAME="build-${{ github.run_number }}"
+          git tag $TAG_NAME
+          git push origin $TAG_NAME

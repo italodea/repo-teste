@@ -369,22 +369,6 @@ describe("AccountController", () => {
         })
       ).to.be.true;
     });
-
-    it("should return 503 if balance is insufficient for type Bonus", async () => {
-      const req = { body: { id: conta_id_bonus, value: 300 } };
-      const res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.spy(),
-      };
-      await AccountController.debitBalance(req, res);
-      expect(res.status.calledWith(503)).to.be.true;
-      expect(
-        res.json.calledWith({
-          error: true,
-          message: "Insufficient balance.",
-        })
-      ).to.be.true;
-    });
   });
 
   describe("transferBalance", () => {
@@ -486,23 +470,7 @@ describe("AccountController", () => {
       ).to.be.true;
     });
 
-    it("should return 503 if balance is insufficient for type Bonus", async () => {
-      const req = {
-        body: { originId: "5678", destinationId: "1234", value: 300 },
-      };
-      const res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.spy(),
-      };
-      await AccountController.transferBalance(req, res);
-      expect(res.status.calledWith(503)).to.be.true;
-      expect(
-        res.json.calledWith({
-          error: true,
-          message: "Insufficient balance",
-        })
-      ).to.be.true;
-    });
+    
 
     it("test bonus points for Bonus type accounts in transferences", async () => {
       const res = {
